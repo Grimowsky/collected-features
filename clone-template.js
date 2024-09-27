@@ -1,42 +1,64 @@
 // clone-template.js
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { exec } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import inquirer from 'inquirer';
 
-const projectType = process.argv[2]
-const projectName = process.argv[3];
+// Function to prompt user for project type and name
+async function promptUser() {
+    const answers = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'projectType',
+            message: 'What type of application do you want to create?',
+            choices: ['backend', 'frontend'],
+        },
+        {
+            type: 'input',
+            name: 'projectName',
+            message: 'What is the name of your project?',
+            validate: (input) => (input ? true : 'Project name cannot be empty.'),
+        },
+    ]);
 
-if(!projectType) {
-    console.error('Invalid project type!')
-    process.exit(1)
+    return answers;
 }
 
-const templateRepo = projectType === "backend" ?
-    'https://github.com/Grimowsky/nestJS-api-nx-template.git' :
-    'https://github.com/Grimowsky/react-ui-nx-template.git';
+// Calculate __dirname for ESM
+const __dirname = new URL('.', import.meta.url).pathname;
 
-const targetPath = path.join(__dirname, 'apps', projectName);
+// Main function to run the script
+async function main() {
+    const { projectType, projectName } = await promptUser();
+    const projectRoot = `apps/${projectName}`;
 
-if (!projectName) {
-    console.error('You must provide a project name as an argument.');
-    process.exit(1);
+    // Select template repository based on project type
+    const templateRepo = projectType === "backend" ?
+        'https://github.com/Grimowsky/nestJS-api-nx-template.git' :
+        'https://github.com/Grimowsky/react-ui-nx-template.git';
+
+    // Define the target path for the new project
+    const targetPath = path.join(__dirname, 'apps', projectName);
+
+    // Clone the template repository
+    exec(`git clone ${templateRepo} ${projectRoot}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error cloning repository: ${error.message}`);
+            return;
+        }
+
+        console.log(`Application "${projectName}" has been successfully created.`);
+
+        // Remove the .git folder
+        const gitFolderPath =  `${projectRoot}/.git`
+        try {
+            fs.rmSync(gitFolderPath, { recursive: true, force: true });
+            console.log(`The ".git" folder has been removed.`);
+        } catch (err) {
+            console.error(`Error removing the ".git" folder: ${err.message}`);
+        }
+    });
 }
 
-// Clone the template repository
-exec(`git clone ${templateRepo} ${targetPath}`, (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error cloning repository: ${error.message}`);
-        return;
-    }
-
-    console.log(`Application "${projectName}" has been successfully created.`);
-
-    // Remove the .git folder
-    const gitFolderPath = path.join(targetPath, '.git');
-    try {
-        fs.rmSync(gitFolderPath, { recursive: true, force: true });
-        console.log(`The ".git" folder has been removed.`);
-    } catch (err) {
-        console.error(`Error removing the ".git" folder: ${err.message}`);
-    }
-});
+// Run the main function
+main().catch(err => console.error(err));
