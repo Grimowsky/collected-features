@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "collected features list",
   "main": "index.js",
+  "workspaces": [
+    "apps/*",
+    "shared/*"
+  ],
   "scripts": {
+    "create-app": "node clone-template.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
