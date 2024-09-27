@@ -3,8 +3,18 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const projectName = process.argv[2];
-const templateRepo = 'https://github.com/Grimowsky/react-ui-nx-template.git'; // Change to the URL of your template repository
+const projectType = process.argv[2]
+const projectName = process.argv[3];
+
+if(!projectType) {
+    console.error('Invalid project type!')
+    process.exit(1)
+}
+
+const templateRepo = projectType === "backend" ?
+    'https://github.com/Grimowsky/nestJS-api-nx-template.git' :
+    'https://github.com/Grimowsky/react-ui-nx-template.git';
+
 const targetPath = path.join(__dirname, 'apps', projectName);
 
 if (!projectName) {
