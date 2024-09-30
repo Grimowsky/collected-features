@@ -7,6 +7,7 @@ services:
       dockerfile: ./apps/test-2/Dockerfile
     volumes:
       - ./src:/app/apps/test-2/src
+      - ../../libs/shared-ui/src:/app/libs/shared-ui/src
     working_dir: /app/apps/test-2
     command: "npm run dev"
     ports:

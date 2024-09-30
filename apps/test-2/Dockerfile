@@ -19,12 +19,17 @@ EXPOSE 3000
 # Second build stage (development)
 FROM base as dev
 
+# Set the working directory to /app/libs/shared-ui
+WORKDIR /app/libs/shared-ui
+
+# Install dependencies for shared-ui
+RUN npm install
+
 # Set the working directory to /app/apps/test-2
 WORKDIR /app/apps/test-2
 
-# Install dependencies for test-2 and shared-ui
+# Install dependencies for test-2
 RUN npm install
 
 # Copy the remaining source files into the container
 COPY ./apps/test-2 .
-
