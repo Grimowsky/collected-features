@@ -1,5 +1,5 @@
 {
-  "name": "test-ui",
+  "name": "test-shad",
   "version": "1.0.0",
   "description": "ReactJS & Vite boilerplate",
   "main": "main.tsx",
@@ -34,16 +34,9 @@
   },
   "homepage": "https://github.com/Grimowsky/react-vite-boilerplate#readme",
   "dependencies": {
-    "@radix-ui/react-icons": "^1.3.0",
-    "@radix-ui/react-slot": "^1.1.0",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.446.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
-    "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
@@ -52,9 +45,6 @@
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "@vitest/coverage-istanbul": "^0.32.4",
-    "@vitest/ui": "^0.31.4",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eslint-config-grimowsky": "^1.0.8",
@@ -65,7 +55,10 @@
     "typescript": "5.0.3",
     "vite": "^4.5.5",
     "vite-plugin-svgr": "^3.3.0",
-    "vitest": "^0.32.4"
+    "vitest": "^0.32.4",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-istanbul": "^0.32.4",
+    "@vitest/ui": "^0.31.4"
   },
   "eslintConfig": {
     "extends": [
