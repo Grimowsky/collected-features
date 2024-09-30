@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  test-ui:
+    build:
+      context: ../../
+      dockerfile: ./apps/test-ui/Dockerfile
+    volumes:
+      - ./src:/app/apps/test-ui/src
+      - ../../libs/shared-ui/src:/app/libs/shared-ui/src
+    working_dir: /app/apps/test-ui
+    command: "npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - VITE_API_URL=http://localhost:8080
