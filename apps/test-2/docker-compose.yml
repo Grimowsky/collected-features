@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ../../
+      dockerfile: ./apps/test-2/Dockerfile
+    volumes:
+      - ./src:/app/apps/test-2/src
+    working_dir: /app/apps/test-2
+    command: "npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - VITE_API_URL=http://localhost:8080
+
