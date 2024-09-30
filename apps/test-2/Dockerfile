@@ -1,24 +1,30 @@
-# app/test-ui/Dockerfile
+# app/test-2/Dockerfile
 
 FROM node:20.17.0-alpine as base
 
-# Ustalamy katalog roboczy na /app
+# Set the working directory to /app
 WORKDIR /app
 
-# Kopiujemy pliki konfiguracyjne i foldery
+# Copy only the configuration files for the workspace
 COPY package*.json ./
 COPY tsconfig.base.json ./
-COPY ./libs ./libs
-COPY ./apps ./apps
 
+# Copy only the necessary folders
+COPY ./libs/shared-ui ./libs/shared-ui
+COPY ./apps/test-2 ./apps/test-2
+
+# Expose port 3000
 EXPOSE 3000
 
-# Drugi etap budowy (dev)
+# Second build stage (development)
 FROM base as dev
 
-# Ustalamy katalog roboczy na /app/apps/test-ui
-WORKDIR /app/apps/test-ui
+# Set the working directory to /app/apps/test-2
+WORKDIR /app/apps/test-2
 
-# Instalujemy zależności dla test-ui
+# Install dependencies for test-2 and shared-ui
 RUN npm install
+
+# Copy the remaining source files into the container
+COPY ./apps/test-2 .
 
