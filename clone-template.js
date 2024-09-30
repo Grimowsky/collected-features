@@ -24,6 +24,20 @@ async function promptUser() {
     return answers;
 }
 
+function updatePackageJson(projectRoot, projectName) {
+    const packageJsonPath = path.join(projectRoot, 'package.json');
+
+    // Read the existing package.json
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+
+    // Update the name property
+    packageJson.name = projectName;
+
+    // Write the updated package.json back to the filesystem
+    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2), 'utf-8');
+    console.log(`Updated package.json with project name: ${projectName}`);
+}
+
 // Calculate __dirname for ESM
 const __dirname = new URL('.', import.meta.url).pathname;
 
@@ -54,6 +68,7 @@ async function main() {
         try {
             fs.rmSync(gitFolderPath, { recursive: true, force: true });
             console.log(`The ".git" folder has been removed.`);
+            updatePackageJson(projectRoot, projectName);
         } catch (err) {
             console.error(`Error removing the ".git" folder: ${err.message}`);
         }

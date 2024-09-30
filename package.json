@@ -6,11 +6,12 @@
   "type": "module",
   "workspaces": [
     "apps/*",
-    "shared/*"
+    "libs/*"
   ],
   "scripts": {
     "create-app": "node clone-template.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "add-component": "npx shadcn@latest add %npm_config_component% -c ./libs/shared-ui/"
   },
   "repository": {
     "type": "git",
