@@ -1,4 +1,3 @@
-// clone-template.js
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -43,7 +42,7 @@ function setupDockerFiles(projectRoot, projectName) {
     const dockerComposePath = path.join(projectRoot, 'docker-compose.yml');
 
     // Update Dockerfile
-    const dockerfileContent = `
+    const dockerfileContent = `\
 # ${projectName}/Dockerfile
 
 FROM node:20.17.0-alpine as base
@@ -78,15 +77,14 @@ WORKDIR /app/apps/${projectName}
 RUN npm install
 
 # Copy the remaining source files into the container
-COPY ./apps/${projectName} .
-`;
+COPY ./apps/${projectName} .`;
 
     // Write the updated Dockerfile back to the filesystem
     fs.writeFileSync(dockerfilePath, dockerfileContent.trim(), 'utf-8');
     console.log(`Updated Dockerfile for project: ${projectName}`);
 
     // Update docker-compose.yml
-    const dockerComposeContent = `
+    const dockerComposeContent = `\
 version: '3.8'
 
 services:
@@ -103,14 +101,30 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - VITE_API_URL=http://localhost:8080
-`;
+      - VITE_API_URL=http://localhost:8080`;
 
     // Write the updated docker-compose.yml back to the filesystem
     fs.writeFileSync(dockerComposePath, dockerComposeContent.trim(), 'utf-8');
     console.log(`Updated docker-compose.yml for project: ${projectName}`);
 }
 
+// Function to change tailwind.config.js
+function changeTailwindConfig(projectRoot) {
+    const tailwindConfigPath = path.join(projectRoot, 'tailwind.config.js');
+
+    // Read the existing tailwind.config.js
+    const tailwindConfig = fs.readFileSync(tailwindConfigPath, 'utf-8');
+
+    // Modify the content array to include the new path
+    const updatedTailwindConfig = tailwindConfig.replace(
+        /content: \[\s*([\s\S]*?)\]/,
+        (match, p1) => `content: [\n    ${p1.trim()},\n    "../../libs/shared-ui/**/*.{js,ts,jsx,tsx}"\n  ]`
+    );
+
+    // Write the updated tailwind.config.js back to the filesystem
+    fs.writeFileSync(tailwindConfigPath, updatedTailwindConfig, 'utf-8');
+    console.log(`Updated tailwind.config.js to include shared-ui path.`);
+}
 
 // Calculate __dirname for ESM
 const __dirname = new URL('.', import.meta.url).pathname;
@@ -143,9 +157,12 @@ async function main() {
             fs.rmSync(gitFolderPath, { recursive: true, force: true });
             console.log(`The ".git" folder has been removed.`);
             updatePackageJson(projectRoot, projectName);
+
             // Only set up Docker files if the project type is frontend
             if (projectType === 'frontend') {
                 setupDockerFiles(projectRoot, projectName);
+                // Change Tailwind config for frontend projects
+                changeTailwindConfig(projectRoot);
             }
         } catch (err) {
             console.error(`Error removing the ".git" folder: ${err.message}`);
