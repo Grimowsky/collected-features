@@ -1,4 +1,4 @@
-# test-ui/Dockerfile
+# tailwind-example/Dockerfile
 
 FROM node:20.17.0-alpine as base
 
@@ -11,7 +11,7 @@ COPY tsconfig.base.json ./
 
 # Copy only the necessary folders
 COPY ./libs/shared-ui ./libs/shared-ui
-COPY ./apps/test-ui ./apps/test-ui
+COPY ./apps/tailwind-example ./apps/tailwind-example
 
 # Expose port 3000
 EXPOSE 3000
@@ -25,11 +25,11 @@ WORKDIR /app/libs/shared-ui
 # Install dependencies for shared-ui
 RUN npm install
 
-# Set the working directory to /app/apps/test-ui
-WORKDIR /app/apps/test-ui
+# Set the working directory to /app/apps/tailwind-example
+WORKDIR /app/apps/tailwind-example
 
-# Install dependencies for test-ui
+# Install dependencies for tailwind-example
 RUN npm install
 
 # Copy the remaining source files into the container
-COPY ./apps/test-ui .
+COPY ./apps/tailwind-example .
