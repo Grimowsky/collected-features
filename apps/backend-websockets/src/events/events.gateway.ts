@@ -5,6 +5,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { PrismaService } from '../prisma.service';
 
 @WebSocketGateway(4000, {
   cors: {
@@ -15,8 +16,27 @@ export class EventsGateway {
   @WebSocketServer()
   server!: Server;
 
-  @SubscribeMessage('hello-world')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data;
+  constructor(private db: PrismaService) {}
+
+  @SubscribeMessage('dislike')
+  async handleDislike(@MessageBody() userId: string): Promise<void> {
+    await this.db.likes.delete({ where: { userId } });
+
+    await this.handleCount();
+  }
+
+  @SubscribeMessage('like')
+  async handleLike(@MessageBody() userId: string): Promise<void> {
+    await this.db.likes.create({ data: { userId: userId } });
+
+    await this.handleCount();
+  }
+
+  @SubscribeMessage('likes-count')
+  private async handleCount(): Promise<void> {
+    const cnt = await this.db.likes.count();
+    console.log('@@@@ likes count', cnt);
+
+    this.server.emit('likes-count', cnt);
   }
 }

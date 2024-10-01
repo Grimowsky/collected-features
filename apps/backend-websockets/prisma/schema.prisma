@@ -29,3 +29,8 @@ model Profile {
   user     Users  @relation(fields: [userId], references: [id])
   userId   String @unique
 }
+
+model Likes {
+  userId   String   @id()
+  likeDate DateTime @default(now())
+}
