@@ -36,7 +36,8 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^6.26.2",
+    "socket.io-client": "^4.8.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
@@ -45,6 +46,9 @@
     "@types/node": "^22.7.4",
     "@types/react": "^18.3.9",
     "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-istanbul": "^0.32.4",
+    "@vitest/ui": "^0.31.4",
     "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eslint-config-grimowsky": "^1.0.8",
@@ -55,10 +59,7 @@
     "typescript": "5.0.3",
     "vite": "^4.5.5",
     "vite-plugin-svgr": "^3.3.0",
-    "vitest": "^0.32.4",
-    "@vitejs/plugin-react": "^4.3.1",
-    "@vitest/coverage-istanbul": "^0.32.4",
-    "@vitest/ui": "^0.31.4"
+    "vitest": "^0.32.4"
   },
   "eslintConfig": {
     "extends": [
@@ -66,7 +67,10 @@
     ],
     "root": true,
     "rules": {
-      "quotes": ["error", "single"]
+      "quotes": [
+        "error",
+        "single"
+      ]
     }
   }
 }
