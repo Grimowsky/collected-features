@@ -9,7 +9,7 @@ function LikesPage() {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:8080');
+    socketRef.current = io('http://localhost:4000');
 
     socketRef.current.on('connect', () => {
       console.log('@@@ connected ws');
@@ -31,7 +31,7 @@ function LikesPage() {
         <Button
           variant="outline"
           onClick={() => {
-            socketRef.current?.emit('hello-world');
+            socketRef.current?.emit('hello-test');
           }}
         >
           click me

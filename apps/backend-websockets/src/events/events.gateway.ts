@@ -6,7 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 
-@WebSocketGateway(8080, {
+@WebSocketGateway(4000, {
   cors: {
     origin: '*',
   },
@@ -17,7 +17,6 @@ export class EventsGateway {
 
   @SubscribeMessage('hello-world')
   async identity(@MessageBody() data: number): Promise<number> {
-    console.log('@@@ hello world');
     return data;
   }
 }
