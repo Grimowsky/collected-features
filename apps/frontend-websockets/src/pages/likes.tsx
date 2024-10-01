@@ -1,32 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Box } from '@shared-ui/components/ui/box';
-import { io, Socket } from 'socket.io-client';
 import { Button } from '@shared-ui/components/ui/button';
-import { BoxColumn } from '@shared-ui/components/ui/boxColumn';
 import { PiThumbsDownThin, PiThumbsUpThin } from 'react-icons/pi';
 import { BoxRow } from '@shared-ui/components/ui/box-row';
-
-interface useSocketConnection {
-  url: string;
-}
-
-function useSocketConnection(data: useSocketConnection) {
-  const socketRef = useRef<Socket | null>(null);
-  const { url } = data;
-  useEffect(() => {
-    socketRef.current = io(url);
-
-    socketRef.current.on('connect', () => {
-      console.log('@@@ connected ws');
-    });
-
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  }, []);
-
-  return { socket: socketRef };
-}
+import { useSocketConnection } from '../hooks/useSocketConnection';
 
 function LikesPage() {
   const { socket } = useSocketConnection({ url: 'http://localhost:4000' });
