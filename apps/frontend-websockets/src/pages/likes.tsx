@@ -4,9 +4,13 @@ import { Button } from '@shared-ui/components/ui/button';
 import { PiThumbsDownThin, PiThumbsUpThin } from 'react-icons/pi';
 import { BoxRow } from '@shared-ui/components/ui/box-row';
 import { useSocketConnection } from '../hooks/useSocketConnection';
+import { useParams } from 'react-router-dom';
 
 function LikesPage() {
-  const { socket } = useSocketConnection({ url: 'http://localhost:4000' });
+  const { socketRef, likes } = useSocketConnection({
+    url: 'http://localhost:4000',
+  });
+  const { id } = useParams<{ id: string }>();
 
   return (
     <Box className={'w-screen h-screen flex justify-center items-center'}>
@@ -16,7 +20,7 @@ function LikesPage() {
           size={'lg'}
           variant="outline-left"
           onClick={() => {
-            socket.current?.emit('hello-test');
+            socketRef.current?.emit('dislike', id);
           }}
         >
           <PiThumbsDownThin className={'text-2xl'} />
@@ -26,14 +30,14 @@ function LikesPage() {
             'min-w-[85px] justify-center items-center border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground min-h-[40px] border-r-0 border-l-0'
           }
         >
-          hello
+          {likes}
         </BoxRow>
         <Button
           className={'rounded-tl-none rounded-bl-none'}
           size={'lg'}
           variant="outline-right"
           onClick={() => {
-            socket.current?.emit('hello-test');
+            socketRef.current?.emit('like', id);
           }}
         >
           <PiThumbsUpThin className={'text-2xl'} />

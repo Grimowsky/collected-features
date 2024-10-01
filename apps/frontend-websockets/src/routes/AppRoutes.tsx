@@ -6,7 +6,7 @@ import { LikesPage } from '../pages/likes';
 export const AppRoutes = (): React.ReactElement => {
   return (
     <Routes>
-      <Route path={routes.BASE_ROUTE} element={<LikesPage />} />
+      <Route path={`${routes.BASE_ROUTE}/:id`} element={<LikesPage />} />
     </Routes>
   );
 };
