@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Box } from '@shared-ui/components/ui/box';
 import { Button } from '@shared-ui/components/ui/button';
 import { PiThumbsDownThin, PiThumbsUpThin } from 'react-icons/pi';
@@ -12,11 +12,9 @@ function LikesPage() {
     <Box className={'w-screen h-screen flex justify-center items-center'}>
       <BoxRow className={'justify-center items-center'}>
         <Button
-          className={
-            'rounded-l-xl rounded-r-0 border-r-0 rounded-tr-none rounded-br-none'
-          }
+          className={'rounded-tr-none rounded-br-none'}
           size={'lg'}
-          variant="outline"
+          variant="outline-left"
           onClick={() => {
             socket.current?.emit('hello-test');
           }}
@@ -31,11 +29,9 @@ function LikesPage() {
           hello
         </BoxRow>
         <Button
-          className={
-            'rounded-r-xl rounded-l-0 border-l-0 rounded-tl-none rounded-bl-none'
-          }
+          className={'rounded-tl-none rounded-bl-none'}
           size={'lg'}
-          variant="outline"
+          variant="outline-right"
           onClick={() => {
             socket.current?.emit('hello-test');
           }}
