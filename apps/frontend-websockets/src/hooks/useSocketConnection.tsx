@@ -14,7 +14,9 @@ export function useSocketConnection(data: useSocketConnection) {
     socketRef.current = io(url);
 
     socketRef.current.on('connect', () => {
-      console.log('@@@ connected @@@');
+      socketRef.current?.emit('get-count', {}, (data: number) => {
+        setLikes(data);
+      });
     });
 
     socketRef?.current?.on('likes-count', (cnt: number) => {

@@ -18,24 +18,24 @@ export class EventsGateway {
 
   constructor(private db: PrismaService) {}
 
+  @SubscribeMessage('get-count')
+  async count(): Promise<number> {
+    return this.db.likes.count();
+  }
+
   @SubscribeMessage('dislike')
   async handleDislike(@MessageBody() userId: string): Promise<void> {
     await this.db.likes.delete({ where: { userId } });
 
-    await this.handleCount();
+    const cnt = await this.db.likes.count();
+
+    this.server.emit('likes-count', cnt);
   }
 
   @SubscribeMessage('like')
   async handleLike(@MessageBody() userId: string): Promise<void> {
     await this.db.likes.create({ data: { userId: userId } });
-
-    await this.handleCount();
-  }
-
-  @SubscribeMessage('likes-count')
-  private async handleCount(): Promise<void> {
     const cnt = await this.db.likes.count();
-    console.log('@@@@ likes count', cnt);
 
     this.server.emit('likes-count', cnt);
   }
