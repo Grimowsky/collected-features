@@ -7,10 +7,14 @@ import { useSocketConnection } from '../hooks/useSocketConnection';
 import { useParams } from 'react-router-dom';
 
 function LikesPage() {
-  const { socketRef, likes } = useSocketConnection({
-    url: 'http://localhost:4000',
-  });
   const { id } = useParams<{ id: string }>();
+
+  const { handleLike, handleDislike, data } = useSocketConnection(
+    {
+      url: 'http://localhost:4000',
+    },
+    id,
+  );
 
   return (
     <Box className={'w-screen h-screen flex justify-center items-center'}>
@@ -19,9 +23,7 @@ function LikesPage() {
           className={'rounded-tr-none rounded-br-none'}
           size={'lg'}
           variant="outline-left"
-          onClick={() => {
-            socketRef.current?.emit('dislike', id);
-          }}
+          onClick={() => id && handleDislike(id)}
         >
           <PiThumbsDownThin className={'text-2xl'} />
         </Button>
@@ -30,15 +32,13 @@ function LikesPage() {
             'min-w-[85px] justify-center items-center border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground min-h-[40px] border-r-0 border-l-0'
           }
         >
-          {likes}
+          {data.likesCnt}
         </BoxRow>
         <Button
           className={'rounded-tl-none rounded-bl-none'}
           size={'lg'}
           variant="outline-right"
-          onClick={() => {
-            socketRef.current?.emit('like', id);
-          }}
+          onClick={() => id && handleLike(id)}
         >
           <PiThumbsUpThin className={'text-2xl'} />
         </Button>
