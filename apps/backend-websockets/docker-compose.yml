@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15.3-alpine3.18
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  backend-app:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    build:
+      context: ./
+      target: dev
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+    command: "npm run start:dev"
+    ports:
+      - "8080:8080"
+      - "4000:4000"
+    environment:
+      - PORT="8080"
+      - DATABASE_URL=postgresql://postgres:@postgres:5432/postgres?schema=public&connect_timeout=3000
+
+      #i know i know
+      #- on production we cannot store it like that
+      - JWT_SECRET=82BE286AE0014A5E7476F17C3E37A06FE366CDC8EDA3E66BFF7265F9320AA294
