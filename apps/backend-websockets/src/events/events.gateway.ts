@@ -6,6 +6,7 @@ import {
 } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { PrismaService } from '../prisma.service';
+import { Action as UserAction } from '@prisma/client';
 
 @WebSocketGateway(4000, {
   cors: {
@@ -18,39 +19,58 @@ export class EventsGateway {
 
   constructor(private db: PrismaService) {}
 
-  @SubscribeMessage('get-count')
-  async count(): Promise<number> {
-    return this.db.likes.count();
-  }
+  @SubscribeMessage('get-init-state')
+  async getInitState(@MessageBody() userId: string): Promise<{
+    likesCnt: number;
+    lastUserAction: UserAction | null;
+  }> {
+    const likesCnt = await this.getLikesCnt();
+    const lastAction = await this.getUserAction(userId);
 
-  @SubscribeMessage('dislike')
-  async handleDislike(@MessageBody() userId: string): Promise<void> {
-    const hasUserLiked = await this.hasLiked(userId);
-
-    if (!hasUserLiked) {
-      return;
-    }
-
-    await this.db.likes.delete({ where: { userId } });
-
-    const cnt = await this.db.likes.count();
-
-    this.server.emit('likes-count', cnt);
+    return { lastUserAction: lastAction, likesCnt };
   }
 
   @SubscribeMessage('like')
-  async handleLike(@MessageBody() userId: string): Promise<void> {
-    if (await this.hasLiked(userId)) {
-      return;
-    }
+  async handleLike(
+    @MessageBody() userId: string,
+  ): Promise<{ lastUserAction: UserAction }> {
+    await this.db.likes.upsert({
+      where: { userId },
+      update: { userId, action: UserAction.Like },
+      create: { userId, action: UserAction.Like },
+    });
 
-    await this.db.likes.create({ data: { userId: userId } });
-    const cnt = await this.db.likes.count();
+    await this.emitLikesUpdate();
 
-    this.server.emit('likes-count', cnt);
+    return { lastUserAction: UserAction.Like };
   }
 
-  private async hasLiked(userId: string) {
-    return this.db.likes.findUnique({ where: { userId } });
+  @SubscribeMessage('dislike')
+  async handleDislike(@MessageBody() userId: string) {
+    await this.db.likes.upsert({
+      where: { userId },
+      update: { userId, action: UserAction.Dislike },
+      create: { userId, action: UserAction.Dislike },
+    });
+
+    await this.emitLikesUpdate();
+
+    return { lastUserAction: UserAction.Dislike };
+  }
+
+  private async emitLikesUpdate() {
+    const cnt = await this.getLikesCnt();
+
+    this.server.emit('update-likes', cnt);
+  }
+
+  private async getUserAction(userId: string): Promise<UserAction | null> {
+    const user = await this.db.likes.findFirst({ where: { userId } });
+
+    return user?.action || null;
+  }
+
+  private async getLikesCnt(): Promise<number> {
+    return this.db.likes.count({ where: { action: 'Like' } });
   }
 }

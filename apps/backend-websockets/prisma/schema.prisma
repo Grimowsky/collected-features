@@ -30,7 +30,13 @@ model Profile {
   userId   String @unique
 }
 
+enum Action {
+  Like
+  Dislike
+}
+
 model Likes {
-  userId   String   @id()
-  likeDate DateTime @default(now())
+  userId     String   @id()
+  actionDate DateTime @default(now())
+  action     Action
 }
