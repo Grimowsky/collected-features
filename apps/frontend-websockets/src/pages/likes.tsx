@@ -16,6 +16,8 @@ function LikesPage() {
     id,
   );
 
+  const { likesCnt, lastUserAction } = data;
+
   return (
     <Box className={'w-screen h-screen flex justify-center items-center'}>
       <BoxRow className={'justify-center items-center'}>
@@ -24,6 +26,7 @@ function LikesPage() {
           size={'lg'}
           variant="outline-left"
           onClick={() => id && handleDislike(id)}
+          disabled={lastUserAction === 'Dislike'}
         >
           <PiThumbsDownThin className={'text-2xl'} />
         </Button>
@@ -32,13 +35,14 @@ function LikesPage() {
             'min-w-[85px] justify-center items-center border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground min-h-[40px] border-r-0 border-l-0'
           }
         >
-          {data.likesCnt}
+          {likesCnt}
         </BoxRow>
         <Button
           className={'rounded-tl-none rounded-bl-none'}
           size={'lg'}
           variant="outline-right"
           onClick={() => id && handleLike(id)}
+          disabled={lastUserAction === 'Like'}
         >
           <PiThumbsUpThin className={'text-2xl'} />
         </Button>

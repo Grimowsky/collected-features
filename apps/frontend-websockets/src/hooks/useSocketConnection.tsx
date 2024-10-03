@@ -7,11 +7,11 @@ interface useSocketConnection {
 
 interface WsData {
   likesCnt: number;
-  lastAction: 'Like' | 'Dislike' | null;
+  lastUserAction: 'Like' | 'Dislike' | null;
 }
 
 interface WsResponse {
-  lastAction: 'Like' | 'Dislike' | null;
+  lastUserAction: 'Like' | 'Dislike' | null;
 }
 
 export function useSocketConnection(
@@ -20,7 +20,7 @@ export function useSocketConnection(
 ) {
   const [data, setData] = React.useState<WsData>({
     likesCnt: 0,
-    lastAction: null,
+    lastUserAction: null,
   });
   const socketRef = useRef<Socket | null>(null);
   const { url } = config;
@@ -49,13 +49,13 @@ export function useSocketConnection(
 
   const handleLike = (id: string) => {
     socketRef.current?.emit('like', id, (retrieveData: WsResponse) => {
-      setData((p) => ({ ...p, lastAction: retrieveData.lastAction }));
+      setData((p) => ({ ...p, lastUserAction: retrieveData.lastUserAction }));
     });
   };
 
   const handleDislike = (id: string) => {
     socketRef.current?.emit('dislike', id, (retrieveData: WsResponse) => {
-      setData((p) => ({ ...p, lastAction: retrieveData.lastAction }));
+      setData((p) => ({ ...p, lastUserAction: retrieveData.lastUserAction }));
     });
   };
   return { socketRef, data, handleLike, handleDislike };
