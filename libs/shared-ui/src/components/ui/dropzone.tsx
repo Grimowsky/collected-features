@@ -1,5 +1,6 @@
 import React from "react";
 import { useDropzone, DropzoneState, DropzoneOptions } from "react-dropzone";
+import { cn } from "@/lib/utils";
 
 type DropzoneContextState = DropzoneState;
 
@@ -20,11 +21,13 @@ type DropzoneProviderProps = React.ComponentProps<"div"> & {
 };
 
 function DropzoneProvider(props: DropzoneProviderProps) {
-  const { children } = props;
+  const { children, options, ...restProps } = props;
 
   return (
     <DropzoneContext.Provider value={{ ...useDropzone() }}>
-      <div>{children}</div>
+      <div {...restProps} className={cn("", props.className)}>
+        {children}
+      </div>
     </DropzoneContext.Provider>
   );
 }
@@ -32,13 +35,15 @@ function DropzoneProvider(props: DropzoneProviderProps) {
 type DropzoneWrapperProps = React.ComponentProps<"div">;
 
 function DropzoneWrapper(props: DropzoneWrapperProps) {
-  const { children } = props;
+  const { children, ...restProps } = props;
 
   return (
     <div
-      className={
-        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground flex justify-center align-middle rounded-md"
-      }
+      {...restProps}
+      className={cn(
+        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground flex justify-center align-middle rounded-md",
+        props.className,
+      )}
     >
       {children}
     </div>
@@ -48,11 +53,15 @@ function DropzoneWrapper(props: DropzoneWrapperProps) {
 type DropzoneRootProps = React.ComponentProps<"div">;
 
 function DropzoneRoot(props: DropzoneRootProps) {
-  const { children } = props;
+  const { children, ...restProps } = props;
   const { getRootProps } = useDropzoneContext();
 
   return (
-    <div {...getRootProps()} className={"p-6"}>
+    <div
+      {...getRootProps()}
+      {...restProps}
+      className={cn("p-6", props.className)}
+    >
       {children}
     </div>
   );
@@ -62,14 +71,25 @@ type DropzoneInputProps = React.ComponentProps<"input">;
 
 function DropzoneInput(props: DropzoneInputProps) {
   const { getInputProps } = useDropzoneContext();
-  return <input {...getInputProps()} />;
+
+  return (
+    <input
+      {...props}
+      {...getInputProps()}
+      className={cn("", props.className)}
+    />
+  );
 }
 
 type DropzoneTextProps = React.ComponentProps<"p">;
 
 function DropzoneText(props: DropzoneTextProps) {
   const { children } = props;
-  return <p {...props}>{children}</p>;
+  return (
+    <p {...props} className={cn("", props.className)}>
+      {children}
+    </p>
+  );
 }
 
 type DropzoneFileListProps = React.ComponentProps<"ul">;
@@ -79,7 +99,11 @@ function DropzoneFileList(props: DropzoneFileListProps) {
 
   const files = acceptedFiles.map((f) => <li key={f.path}>{f.name}</li>);
 
-  return <ul {...props}> {files}</ul>;
+  return (
+    <ul {...props} className={cn("", props.className)}>
+      {files}
+    </ul>
+  );
 }
 
 export {
