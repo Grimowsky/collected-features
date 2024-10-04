@@ -24,7 +24,7 @@ function DropzoneProvider(props: DropzoneProviderProps) {
   const { children, options, ...restProps } = props;
 
   return (
-    <DropzoneContext.Provider value={{ ...useDropzone() }}>
+    <DropzoneContext.Provider value={{ ...useDropzone({ ...options }) }}>
       <div {...restProps} className={cn("", props.className)}>
         {children}
       </div>
@@ -74,8 +74,9 @@ function DropzoneInput(props: DropzoneInputProps) {
 
   return (
     <input
-      {...props}
       {...getInputProps()}
+      {...props}
+      type="file"
       className={cn("", props.className)}
     />
   );
@@ -95,15 +96,22 @@ function DropzoneText(props: DropzoneTextProps) {
 type DropzoneFileListProps = React.ComponentProps<"ul">;
 
 function DropzoneFileList(props: DropzoneFileListProps) {
+  const { children } = props;
+  return (
+    <ul {...props} className={cn("", props.className)}>
+      {children}
+    </ul>
+  );
+}
+
+type DropzoneListItemProps = React.ComponentProps<"li">;
+
+function DropzoneListItems(props: DropzoneListItemProps) {
   const { acceptedFiles } = useDropzoneContext();
 
   const files = acceptedFiles.map((f) => <li key={f.path}>{f.name}</li>);
 
-  return (
-    <ul {...props} className={cn("", props.className)}>
-      {files}
-    </ul>
-  );
+  return <>{files}</>;
 }
 
 export {
@@ -113,4 +121,5 @@ export {
   DropzoneInput,
   DropzoneText,
   DropzoneFileList,
+  DropzoneListItems,
 };
