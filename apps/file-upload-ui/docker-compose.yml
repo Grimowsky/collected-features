@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  file-upload-ui:
+    build:
+      context: ../../
+      dockerfile: ./apps/file-upload-ui/Dockerfile
+    volumes:
+      - ./src:/app/apps/file-upload-ui/src
+      - ../../libs/shared-ui/src:/app/libs/shared-ui/src
+    working_dir: /app/apps/file-upload-ui
+    command: "npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - VITE_API_URL=http://localhost:8080
