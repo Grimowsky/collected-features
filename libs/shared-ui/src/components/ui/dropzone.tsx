@@ -16,18 +16,17 @@ const useDropzoneContext = () => {
   return ctx;
 };
 
-type DropzoneProviderProps = React.ComponentProps<"div"> & {
+type DropzoneProviderProps = {
   options?: DropzoneOptions;
+  children: React.ReactNode;
 };
 
 function DropzoneProvider(props: DropzoneProviderProps) {
-  const { children, options, ...restProps } = props;
+  const { options, children } = props;
 
   return (
     <DropzoneContext.Provider value={{ ...useDropzone({ ...options }) }}>
-      <div {...restProps} className={cn("", props.className)}>
-        {children}
-      </div>
+      <>{children}</>
     </DropzoneContext.Provider>
   );
 }
@@ -41,7 +40,7 @@ function DropzoneWrapper(props: DropzoneWrapperProps) {
     <div
       {...restProps}
       className={cn(
-        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground flex justify-center align-middle rounded-md",
+        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground flex justify-center align-middle items-center rounded-md",
         props.className,
       )}
     >
