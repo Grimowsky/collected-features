@@ -13,8 +13,37 @@ import { TrashIcon, FileIcon } from '@radix-ui/react-icons';
 import { AspectRatio } from '@shared-ui/components/ui/aspect-ratio';
 import { BoxColumn } from '@shared-ui/components/ui/boxColumn';
 
+type FileListProps = {
+  files: File[];
+  removeFile: (f: File) => void;
+};
+
+function FileList(props: FileListProps) {
+  const { files, removeFile } = props;
+  return (
+    <ul className={'mt-4'}>
+      {files.length > 0 &&
+        files.map((f) => (
+          <BoxRow className={'gap-4 items-center'}>
+            <li key={crypto.randomUUID()}>{f.name} </li>
+            <Button
+              variant="outline"
+              size={'icon'}
+              onClick={() => {
+                removeFile(f);
+              }}
+            >
+              <TrashIcon />
+            </Button>
+          </BoxRow>
+        ))}
+    </ul>
+  );
+}
+
 export function UploadPage() {
   const [files, setFiles] = React.useState<File[]>([]);
+
   const onChange = (filesToAdd: File[]) => {
     setFiles([...files, ...filesToAdd]);
   };
@@ -52,23 +81,7 @@ export function UploadPage() {
             </AspectRatio>
           </Box>
         </DropzoneProvider>
-        <ul className={'mt-4'}>
-          {files.length > 0 &&
-            files.map((f) => (
-              <BoxRow className={'gap-4 items-center'}>
-                <li key={crypto.randomUUID()}>{f.name} </li>{' '}
-                <Button
-                  variant="outline"
-                  size={'icon'}
-                  onClick={() => {
-                    removeFile(f);
-                  }}
-                >
-                  <TrashIcon />
-                </Button>
-              </BoxRow>
-            ))}
-        </ul>
+        <FileList {...{ files, removeFile }} />
       </BoxColumn>
     </Box>
   );
