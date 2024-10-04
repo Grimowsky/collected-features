@@ -1,5 +1,5 @@
 import React from "react";
-import { useDropzone, DropzoneState } from "react-dropzone";
+import { useDropzone, DropzoneState, DropzoneOptions } from "react-dropzone";
 
 type DropzoneContextState = DropzoneState;
 
@@ -15,21 +15,33 @@ const useDropzoneContext = () => {
   return ctx;
 };
 
-type DropzoneProviderProps = React.ComponentProps<"section">;
+type DropzoneProviderProps = React.ComponentProps<"div"> & {
+  options?: DropzoneOptions;
+};
 
 function DropzoneProvider(props: DropzoneProviderProps) {
   const { children } = props;
 
   return (
     <DropzoneContext.Provider value={{ ...useDropzone() }}>
-      <section
-        className={
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground rounded-md flex justify-center align-middle"
-        }
-      >
-        {children}
-      </section>
+      <div>{children}</div>
     </DropzoneContext.Provider>
+  );
+}
+
+type DropzoneWrapperProps = React.ComponentProps<"div">;
+
+function DropzoneWrapper(props: DropzoneWrapperProps) {
+  const { children } = props;
+
+  return (
+    <div
+      className={
+        "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground flex justify-center align-middle rounded-md"
+      }
+    >
+      {children}
+    </div>
   );
 }
 
@@ -60,4 +72,21 @@ function DropzoneText(props: DropzoneTextProps) {
   return <p {...props}>{children}</p>;
 }
 
-export { DropzoneProvider, DropzoneRoot, DropzoneInput, DropzoneText };
+type DropzoneFileListProps = React.ComponentProps<"ul">;
+
+function DropzoneFileList(props: DropzoneFileListProps) {
+  const { acceptedFiles } = useDropzoneContext();
+
+  const files = acceptedFiles.map((f) => <li key={f.path}>{f.name}</li>);
+
+  return <ul {...props}> {files}</ul>;
+}
+
+export {
+  DropzoneProvider,
+  DropzoneWrapper,
+  DropzoneRoot,
+  DropzoneInput,
+  DropzoneText,
+  DropzoneFileList,
+};
