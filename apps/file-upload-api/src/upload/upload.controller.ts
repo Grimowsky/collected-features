@@ -9,11 +9,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
-  @Get('/')
-  async test() {
-    console.log('@@@ hello world');
-    return { msg: 'hello world' };
-  }
 
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
