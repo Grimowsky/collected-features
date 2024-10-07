@@ -12,6 +12,7 @@ import { Button } from '@shared-ui/components/ui/button';
 import { TrashIcon, FileIcon } from '@radix-ui/react-icons';
 import { AspectRatio } from '@shared-ui/components/ui/aspect-ratio';
 import { BoxColumn } from '@shared-ui/components/ui/boxColumn';
+import fileUpload from '../api/file-upload';
 
 type FileListProps = {
   files: File[];
@@ -54,7 +55,7 @@ export function UploadPage() {
   };
   return (
     <Box className={'flex justify-center items-center w-full h-screen'}>
-      <BoxColumn>
+      <BoxColumn className="gap-4">
         <DropzoneProvider options={{ onDrop: onChange }}>
           <Box className={'w-[500px]'}>
             <AspectRatio ratio={2}>
@@ -82,6 +83,19 @@ export function UploadPage() {
           </Box>
         </DropzoneProvider>
         <FileList {...{ files, removeFile }} />
+        {files.length > 0 && (
+          <BoxRow className={'w-full items-center justify-center'}>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={async () => {
+                await fileUpload(files[0]);
+              }}
+            >
+              Upload File
+            </Button>
+          </BoxRow>
+        )}
       </BoxColumn>
     </Box>
   );
