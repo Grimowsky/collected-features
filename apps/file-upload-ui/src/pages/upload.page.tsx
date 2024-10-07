@@ -12,7 +12,7 @@ import { Button } from '@shared-ui/components/ui/button';
 import { TrashIcon, FileIcon } from '@radix-ui/react-icons';
 import { AspectRatio } from '@shared-ui/components/ui/aspect-ratio';
 import { BoxColumn } from '@shared-ui/components/ui/boxColumn';
-import fileUpload from '../api/file-upload';
+import { useFileUpload } from '../api/file-upload';
 
 type FileListProps = {
   files: File[];
@@ -21,6 +21,7 @@ type FileListProps = {
 
 function FileList(props: FileListProps) {
   const { files, removeFile } = props;
+
   return (
     <ul className={'mt-4'}>
       {files.length > 0 &&
@@ -44,7 +45,13 @@ function FileList(props: FileListProps) {
 
 export function UploadPage() {
   const [files, setFiles] = React.useState<File[]>([]);
+  const { mutate, isPending } = useFileUpload();
 
+  function handleUpload() {
+    if (files.length > 0) {
+      mutate(files[0]);
+    }
+  }
   const onChange = (filesToAdd: File[]) => {
     setFiles([...files, ...filesToAdd]);
   };
@@ -53,6 +60,9 @@ export function UploadPage() {
     const filteredFiles = files.filter((f) => f.name !== fileToRemove.name);
     setFiles([...filteredFiles]);
   };
+
+  console.log('@@@', isPending);
+
   return (
     <Box className={'flex justify-center items-center w-full h-screen'}>
       <BoxColumn className="gap-4">
@@ -85,13 +95,7 @@ export function UploadPage() {
         <FileList {...{ files, removeFile }} />
         {files.length > 0 && (
           <BoxRow className={'w-full items-center justify-center'}>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={async () => {
-                await fileUpload(files[0]);
-              }}
-            >
+            <Button variant="outline" size="lg" onClick={handleUpload}>
               Upload File
             </Button>
           </BoxRow>
