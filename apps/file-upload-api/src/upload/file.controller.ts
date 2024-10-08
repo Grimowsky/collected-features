@@ -1,22 +1,29 @@
 import {
   Controller,
+  Get,
   HttpCode,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadService } from './upload.service';
+import { FileService } from './file.service';
 
-@Controller('upload')
-export class UploadController {
-  constructor(private uploadService: UploadService) {}
-  @Post('file')
+@Controller('files')
+export class FileController {
+  constructor(private fileService: FileService) {}
+  @Post('upload')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    await this.uploadService.uploadFile(file);
+    await this.fileService.uploadFile(file);
 
     return { message: 'File uploaded successfully' };
+  }
+  @Get()
+  async fileList() {
+    const files = await this.fileService.listFiles();
+
+    return { files };
   }
 }
