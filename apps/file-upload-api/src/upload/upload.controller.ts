@@ -14,6 +14,6 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log('@@@@', file);
-    return { message: 'File uploaded successfully', file };
+    return { message: 'File uploaded successfully' };
   }
 }
