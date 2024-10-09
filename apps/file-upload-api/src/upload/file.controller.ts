@@ -17,10 +17,11 @@ export class FileController {
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    await this.fileService.uploadFile(file);
+    const res = await this.fileService.uploadFile(file);
 
-    return { message: 'File uploaded successfully' };
+    return { message: 'File uploaded successfully', ...res };
   }
+
   @Get('/')
   @UseInterceptors(new FileListInterceptor())
   async fileList() {
