@@ -12,7 +12,8 @@ import { Button } from '@shared-ui/components/ui/button';
 import { TrashIcon, FileIcon } from '@radix-ui/react-icons';
 import { AspectRatio } from '@shared-ui/components/ui/aspect-ratio';
 import { BoxColumn } from '@shared-ui/components/ui/boxColumn';
-import { useFileUpload } from '../api/file-upload';
+import { fileUpload } from '../api/file-upload';
+import { useMutation } from '@tanstack/react-query';
 
 type FileListProps = {
   files: File[];
@@ -45,7 +46,7 @@ function FileList(props: FileListProps) {
 
 export function UploadPage() {
   const [files, setFiles] = React.useState<File[]>([]);
-  const { mutate, isPending } = useFileUpload();
+  const { mutate, isPending } = useMutation({ mutationFn: fileUpload });
 
   function handleUpload() {
     if (files.length > 0) {
@@ -60,8 +61,6 @@ export function UploadPage() {
     const filteredFiles = files.filter((f) => f.name !== fileToRemove.name);
     setFiles([...filteredFiles]);
   };
-
-  console.log('@@@', isPending);
 
   return (
     <Box className={'flex justify-center items-center w-full h-screen'}>
@@ -95,7 +94,12 @@ export function UploadPage() {
         <FileList {...{ files, removeFile }} />
         {files.length > 0 && (
           <BoxRow className={'w-full items-center justify-center'}>
-            <Button variant="outline" size="lg" onClick={handleUpload}>
+            <Button
+              disabled={isPending}
+              variant="outline"
+              size="lg"
+              onClick={handleUpload}
+            >
               Upload File
             </Button>
           </BoxRow>
