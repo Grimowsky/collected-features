@@ -18,7 +18,7 @@ export interface Response {
 @Injectable()
 export class FileListInterceptor implements NestInterceptor<GetFilesResponse> {
   intercept(
-    context: ExecutionContext,
+    _context: ExecutionContext,
     next: CallHandler,
   ): Observable<Response> {
     return next.handle().pipe(
@@ -28,7 +28,6 @@ export class FileListInterceptor implements NestInterceptor<GetFilesResponse> {
     );
   }
   private mapFilesToResponse(files: GsFile[]): FileList[] {
-    console.log('@@@@', files[0]);
     return files.map((f) => ({
       name: f.metadata.name,
     }));
