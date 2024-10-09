@@ -13,8 +13,9 @@ type FileList = {
 };
 
 export interface Response {
-  data: FileList[];
+  files: FileList[];
 }
+
 @Injectable()
 export class FileListInterceptor implements NestInterceptor<GetFilesResponse> {
   intercept(
@@ -23,13 +24,19 @@ export class FileListInterceptor implements NestInterceptor<GetFilesResponse> {
   ): Observable<Response> {
     return next.handle().pipe(
       map((data: { files: GsFile[] }) => {
-        return { data: this.mapFilesToResponse(data.files) };
+        return { files: this.mapFilesToResponse(data.files) };
       }),
     );
+  }
+  private getFileExtension(name: string) {
+    return name.split('.').reverse()[0];
   }
   private mapFilesToResponse(files: GsFile[]): FileList[] {
     return files.map((f) => ({
       name: f.metadata.name,
+      mimetype: f.metadata.contentType,
+      extension: this.getFileExtension(f.name),
+      uploadDate: f.metadata.timeCreated,
     }));
   }
 }
