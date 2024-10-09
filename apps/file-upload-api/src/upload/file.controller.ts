@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
+import { FileListInterceptor } from './file-list.interceptor';
 
 @Controller('files')
 export class FileController {
@@ -20,7 +21,8 @@ export class FileController {
 
     return { message: 'File uploaded successfully' };
   }
-  @Get()
+  @Get('/')
+  @UseInterceptors(new FileListInterceptor())
   async fileList() {
     const files = await this.fileService.listFiles();
 

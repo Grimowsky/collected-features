@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { PrismaKnownClientExceptions } from './_common/prisma-exception.filter';
 
 const PORT = process?.env?.PORT || 8080;
+const STORAGE_AUTH = process?.env?.GOOGLE_APPLICATION_CREDENTIALS || '';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,7 @@ async function bootstrap() {
   });
 
   await app.listen(8080);
+  console.log('@@@', JSON.parse(STORAGE_AUTH));
   console.log(`Server is running on http://localhost:${PORT}`);
 }
 bootstrap();

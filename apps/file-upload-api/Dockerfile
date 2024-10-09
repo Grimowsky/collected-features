@@ -12,4 +12,4 @@ ENV NODE_ENV=development
 RUN npm install
 COPY . .
 
-# RUN ls -la
+RUN ls -la
