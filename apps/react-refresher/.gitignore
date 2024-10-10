@@ -36,3 +36,5 @@ yarn-error.log*
 tsconfig.tsbuildinfo
 vite.config.d.ts
 vite.config.js
+
+/apps/*/.env
