@@ -1,6 +1,7 @@
 import React from 'react';
 import { routes } from './routes.schema';
 import { Route, Routes } from 'react-router-dom';
+import { UseMemoPage } from '../pages/use-memo.page';
 
 export const AppRoutes = (): React.ReactElement => {
   return (
@@ -11,6 +12,7 @@ export const AppRoutes = (): React.ReactElement => {
           <div className={'h-screen text-black-500 text-2xl'}>hello there</div>
         }
       />
+      <Route path={routes.USE_MEMO} element={<UseMemoPage />} />
     </Routes>
   );
 };
