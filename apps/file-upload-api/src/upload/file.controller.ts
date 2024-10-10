@@ -2,13 +2,16 @@ import {
   Controller,
   Get,
   HttpCode,
+  Param,
   Post,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { FileListInterceptor } from './file-list.interceptor';
+import { Response } from 'express';
 
 @Controller('files')
 export class FileController {
@@ -29,5 +32,19 @@ export class FileController {
     const files = await this.fileService.listFiles();
 
     return { files };
+  }
+  @Get('/:fileName')
+  async downloadFile(
+    @Param('fileName') fileName: string,
+    @Res() res: Response,
+  ) {
+    const { file, name, mimeType } = await this.fileService.download(fileName);
+
+    res.set({
+      'Content-Type': mimeType,
+      'Content-Disposition': `attachment; filename="${name}"`,
+    });
+
+    res.send(file);
   }
 }
