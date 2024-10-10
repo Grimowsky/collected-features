@@ -2,6 +2,7 @@ import React from 'react';
 import { routes } from './routes.schema';
 import { Route, Routes } from 'react-router-dom';
 import { UseMemoPage } from '../pages/use-memo.page';
+import { RerenderPage } from '../pages/rerender.page';
 
 export const AppRoutes = (): React.ReactElement => {
   return (
@@ -13,6 +14,7 @@ export const AppRoutes = (): React.ReactElement => {
         }
       />
       <Route path={routes.USE_MEMO} element={<UseMemoPage />} />
+      <Route path={routes.RERENDERS} element={<RerenderPage />} />
     </Routes>
   );
 };
